@@ -20,13 +20,14 @@ class Schedule {
         // generating payments information:
 
         $remainingAmount = $presentValue;
+        $totalPayment = $this->totalPayment($presentValue, $numOfPeriods, $rate);
 
         for ($i=0; $i < $numOfPeriods; $i++) {
-            $this->payments[$i] = new Payment($i+1, strtotime("+".$i." month", $startTime), $remainingAmount, $this->totalPayment($presentValue, $numOfPeriods, $rate), $rate);
+            $this->payments[$i] = new Payment($i+1, strtotime("+".$i." month", $startTime), $remainingAmount, $totalPayment, $rate);
 
-            // last payment need a very small, microscopic indeed, adjustment:
+            // last payment needs a very small, microscopic indeed, adjustment:
             if ($i == $numOfPeriods-1) {
-                $this->payments[$i]->principalPayment = number_format($remainingAmount, 2);
+                $this->payments[$i]->principalPayment = number_format($remainingAmount, 2, '.', '');
                 $this->payments[$i]->totalPayment = $this->payments[$i]->principalPayment + $this->payments[$i]->interestPayment;
             }
 
@@ -38,7 +39,7 @@ class Schedule {
 
     public function totalPayment($value, $periods, $interest) {
         $interestMonthly = $interest / 12 / 100;
-        $tp = number_format(floor(($interestMonthly * $value) / (1 - pow(1 + $interestMonthly, $periods * -1)) * 100)/100, 2);
+        $tp = floor(($interestMonthly * $value) / (1 - pow(1 + $interestMonthly, $periods * -1)) * 100)/100;
         return $tp;
     }
 
@@ -101,6 +102,23 @@ class Schedule {
             $remainingAmount -= $this->payments[$i]->principalPayment;
         }
     }
+
+    // function to display schedule on screen, if needed:
+
+    public function toScreen() {
+        echo "<table><thead><th>Payment #</th><th>Payment date</th><th>Remaining amount</th><th>Principal payment</th><th>Interest payment</th><th>Total payment</th><th>Interest rate</th>";
+        foreach ($this->payments as $payment) {
+            echo "<tr>";
+            echo "<td>".$payment->id."</td>";
+            echo "<td>".$payment->date."</td>";
+            echo "<td>".$payment->remainingAmount."</td>";
+            echo "<td>".$payment->principalPayment."</td>";
+            echo "<td>".$payment->interestPayment."</td>";
+            echo "<td>".$payment->totalPayment."</td>";
+            echo "<td>".$payment->rate."</td>";
+        }
+    }
+
 }
 
  ?>
