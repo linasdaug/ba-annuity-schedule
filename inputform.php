@@ -2,7 +2,7 @@
 <form action="scheduledisplay.php" method="post">
     <h3>Calculate Loan Schedule</h3><br>
     <label for="amount">Enter amount:</label><br>
-    <input type="number" name="presentValue" min="1" max="100000000" required><br>
+    <input type="number" name="presentValue" min="100" max="100000000" required><br>
     <label for="rate">Enter interest rate:</label><br>
     <input type="number" name="rate" min="0.01" max="100" step="0.01" required><br>
     <label for="rate">Enter number of periods (months):</label><br>
